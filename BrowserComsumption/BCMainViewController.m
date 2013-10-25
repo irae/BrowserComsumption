@@ -7,10 +7,8 @@
 //
 
 #import "BCMainViewController.h"
-const CGFloat BCMainViewControllerToolBarMaxHeight = 64.0;
 const CGFloat BCMainViewControllerToolBarMinY      = -44.0;
 const CGFloat BCMainViewControllerToolBarMaxY      = 0.0;
-
 
 @interface BCMainViewController () <UIScrollViewDelegate>
 @property (weak, nonatomic) IBOutlet UIView *toolBar;
@@ -19,9 +17,10 @@ const CGFloat BCMainViewControllerToolBarMaxY      = 0.0;
 
 @implementation BCMainViewController {
     CGFloat _initialScrollPostion;
+    CGFloat _toolBarHeight;
 }
 
-#pragma mark Controller lifecycle
+#pragma mark - lifecycle
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -41,9 +40,7 @@ const CGFloat BCMainViewControllerToolBarMaxY      = 0.0;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    self.navigationItem.title = @"Title";
-    
+
     // we'll use scroll events to move the bars
     self.webview.scrollView.delegate = self;
 
@@ -56,8 +53,8 @@ const CGFloat BCMainViewControllerToolBarMaxY      = 0.0;
 - (void)adjustContentPosition
 {
     // webview starts at top, move content below it
-    CGRect toolBarFrame = self.toolBar.frame;
-    _initialScrollPostion = -toolBarFrame.size.height;
+    _toolBarHeight = self.toolBar.frame.size.height;
+    _initialScrollPostion = -_toolBarHeight;
     [self updateWebviewWithOffset:_initialScrollPostion];
 }
 
@@ -85,17 +82,21 @@ const CGFloat BCMainViewControllerToolBarMaxY      = 0.0;
     targetY = MAX(targetY, BCMainViewControllerToolBarMinY);
     targetY = MIN(targetY, BCMainViewControllerToolBarMaxY);
     CGRect toolBarFrame = self.toolBar.frame;
-    toolBarFrame.origin.y = targetY;
-    self.toolBar.frame = toolBarFrame;
+    if (targetY != toolBarFrame.origin.y) {
+        toolBarFrame.origin.y = targetY;
+        self.toolBar.frame = toolBarFrame;
+    }
 }
 
 - (void)updateWebviewWithOffset:(CGFloat)offset
 {
-    CGFloat targetTop = _initialScrollPostion - offset + self.toolBar.frame.size.height;
-    targetTop = MAX(targetTop, BCMainViewControllerToolBarMinY + self.toolBar.frame.size.height);
-    targetTop = MIN(targetTop, BCMainViewControllerToolBarMaxY + self.toolBar.frame.size.height);
-    UIEdgeInsets targetInset = UIEdgeInsetsMake(targetTop, 0.0, 0.0, 0.0);
-    [self setWebViewContentInset:targetInset];
+    CGFloat targetTop = _initialScrollPostion - offset + _toolBarHeight;
+    targetTop = MAX(targetTop, BCMainViewControllerToolBarMinY + _toolBarHeight);
+    targetTop = MIN(targetTop, BCMainViewControllerToolBarMaxY + _toolBarHeight);
+    if (targetTop != self.webview.scrollView.contentInset.top) {
+        UIEdgeInsets targetInset = UIEdgeInsetsMake(targetTop, 0.0, 0.0, 0.0);
+        [self setWebViewContentInset:targetInset];
+    }
 }
 
 //-----------------------------------------------------------------------------------------
@@ -104,8 +105,6 @@ const CGFloat BCMainViewControllerToolBarMaxY      = 0.0;
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
     CGFloat scrollOffset = scrollView.contentOffset.y;
-    CGFloat scrollInset = scrollView.contentInset.top;
-    NSLog(@"offset: %f, inset:%f",scrollOffset, scrollInset);
     [self updateToolbarWithOffset:scrollOffset];
     [self updateWebviewWithOffset:scrollOffset];
 }
