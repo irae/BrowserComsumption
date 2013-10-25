@@ -19,6 +19,9 @@
 		2877E8191811B64000546343 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2877E8011811B64000546343 /* UIKit.framework */; };
 		2877E8211811B64000546343 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2877E81F1811B64000546343 /* InfoPlist.strings */; };
 		2877E8231811B64000546343 /* BrowserComsumptionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2877E8221811B64000546343 /* BrowserComsumptionTests.m */; };
+		2877E8331812213400546343 /* BCMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2877E8311812213400546343 /* BCMainViewController.m */; };
+		2877E8341812213400546343 /* BCMainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2877E8321812213400546343 /* BCMainViewController.xib */; };
+		2877E8361812259300546343 /* browser_content.html in Resources */ = {isa = PBXBuildFile; fileRef = 2877E8351812259300546343 /* browser_content.html */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,6 +51,10 @@
 		2877E81E1811B64000546343 /* BrowserComsumptionTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "BrowserComsumptionTests-Info.plist"; sourceTree = "<group>"; };
 		2877E8201811B64000546343 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		2877E8221811B64000546343 /* BrowserComsumptionTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BrowserComsumptionTests.m; sourceTree = "<group>"; };
+		2877E8301812213400546343 /* BCMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BCMainViewController.h; sourceTree = "<group>"; };
+		2877E8311812213400546343 /* BCMainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BCMainViewController.m; sourceTree = "<group>"; };
+		2877E8321812213400546343 /* BCMainViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BCMainViewController.xib; sourceTree = "<group>"; };
+		2877E8351812259300546343 /* browser_content.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = browser_content.html; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,6 +116,9 @@
 			children = (
 				2877E80C1811B64000546343 /* BCAppDelegate.h */,
 				2877E80D1811B64000546343 /* BCAppDelegate.m */,
+				2877E8301812213400546343 /* BCMainViewController.h */,
+				2877E8311812213400546343 /* BCMainViewController.m */,
+				2877E8321812213400546343 /* BCMainViewController.xib */,
 				2877E80F1811B64000546343 /* Images.xcassets */,
 				2877E8041811B64000546343 /* Supporting Files */,
 			);
@@ -118,6 +128,7 @@
 		2877E8041811B64000546343 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				2877E8351812259300546343 /* browser_content.html */,
 				2877E8051811B64000546343 /* BrowserComsumption-Info.plist */,
 				2877E8061811B64000546343 /* InfoPlist.strings */,
 				2877E8091811B64000546343 /* main.m */,
@@ -221,6 +232,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				2877E8081811B64000546343 /* InfoPlist.strings in Resources */,
+				2877E8341812213400546343 /* BCMainViewController.xib in Resources */,
+				2877E8361812259300546343 /* browser_content.html in Resources */,
 				2877E8101811B64000546343 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -240,6 +253,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2877E8331812213400546343 /* BCMainViewController.m in Sources */,
 				2877E80A1811B64000546343 /* main.m in Sources */,
 				2877E80E1811B64000546343 /* BCAppDelegate.m in Sources */,
 			);
@@ -358,11 +372,14 @@
 		2877E8271811B64000546343 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "BrowserComsumption/BrowserComsumption-Prefix.pch";
 				INFOPLIST_FILE = "BrowserComsumption/BrowserComsumption-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -371,11 +388,14 @@
 		2877E8281811B64000546343 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "BrowserComsumption/BrowserComsumption-Prefix.pch";
 				INFOPLIST_FILE = "BrowserComsumption/BrowserComsumption-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -442,6 +462,7 @@
 				2877E8281811B64000546343 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		2877E8291811B64000546343 /* Build configuration list for PBXNativeTarget "BrowserComsumptionTests" */ = {
 			isa = XCConfigurationList;
@@ -450,6 +471,7 @@
 				2877E82B1811B64000546343 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
