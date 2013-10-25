@@ -8,7 +8,7 @@
 
 #import "BCMainViewController.h"
 
-@interface BCMainViewController ()
+@interface BCMainViewController () <UIScrollViewDelegate>
 
 @end
 
@@ -21,6 +21,8 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+        self.webview.scrollView.delegate = self;
+        
     }
     return self;
 }
@@ -51,7 +53,9 @@
     }
 }
 
-- (void)didReceiveMemoryWarning
+#pragma mark - UIScrollViewDelegate
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
     
 }
