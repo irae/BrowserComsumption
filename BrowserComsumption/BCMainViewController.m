@@ -19,6 +19,7 @@ const CGFloat BCMainViewControllerToolBarMaxY      = 0.0;
     CGFloat _initialScrollPostion;
     CGFloat _toolBarOrigin;
     CGFloat _toolBarHeight;
+    BOOL _animating;
 }
 
 #pragma mark - lifecycle
@@ -88,6 +89,38 @@ const CGFloat BCMainViewControllerToolBarMaxY      = 0.0;
     [self.webview.scrollView setScrollIndicatorInsets:inset];
 }
 
+- (void)fixHalfShownToolbar
+{
+    if (![self isToolBarHidden] && ![self isToolBarShown]) {
+        CGRect toolBarFrame = self.toolBar.frame;
+        CGFloat toolbarPositionRange = BCMainViewControllerToolBarMaxY - BCMainViewControllerToolBarMinY;
+        CGFloat offset = _initialScrollPostion - self.webview.scrollView.contentOffset.y;
+        CGFloat targetInsetTop = 0.0;
+
+        if (offset < BCMainViewControllerToolBarMaxY) {
+            toolBarFrame.origin.y = BCMainViewControllerToolBarMaxY;
+            targetInsetTop = BCMainViewControllerToolBarMaxY + toolBarFrame.size.height;
+        } else if (toolBarFrame.origin.y < toolbarPositionRange/2 ) {
+            toolBarFrame.origin.y = BCMainViewControllerToolBarMaxY;
+        } else {
+            toolBarFrame.origin.y = BCMainViewControllerToolBarMinY;
+        }
+        
+        
+        _animating = YES;
+        [UIView animateWithDuration:0.15f animations:^{
+            self.toolBar.frame = toolBarFrame;
+            if (targetInsetTop != self.webview.scrollView.contentInset.top) {
+                UIEdgeInsets inset = UIEdgeInsetsMake(targetInsetTop, 0.0, 0.0, 0.0);
+                [self setWebViewContentInset:inset];
+            }
+        } completion:^(BOOL finished) {
+            _animating = NO;
+        }];
+
+    }
+}
+
 - (void)updateToolbarWithOffset:(CGFloat)offset
 {
     CGFloat targetY = _toolBarOrigin - offset;
@@ -120,6 +153,9 @@ const CGFloat BCMainViewControllerToolBarMaxY      = 0.0;
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
+    if (_animating == YES) {
+        return;
+    }
     CGFloat scrollOffset = scrollView.contentOffset.y;
     [self updateToolbarWithOffset:scrollOffset];
     [self updateWebviewWithOffset:scrollOffset];
@@ -137,10 +173,22 @@ const CGFloat BCMainViewControllerToolBarMaxY      = 0.0;
 }
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView{
-    if ([self isToolBarShown]) {
+    if (![self isToolBarHidden]) {
         // setting the origin so toolbar can go up as the user drags
         _toolBarOrigin = scrollView.contentOffset.y;
     }
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+{
+    if (!decelerate) {
+        [self fixHalfShownToolbar];
+    }
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+{
+    [self fixHalfShownToolbar];
 }
 
 @end
