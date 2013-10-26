@@ -83,6 +83,13 @@ const CGFloat BCMainViewControllerToolBarMaxY      = 0.0;
     return self.toolBar.frame.origin.y == BCMainViewControllerToolBarMinY;
 }
 
+- (BOOL)isScrollNearTop
+{
+    CGFloat relativePosition = _initialScrollPostion + self.webview.scrollView.contentOffset.y;
+    return BCMainViewControllerToolBarMinY > relativePosition && relativePosition <= BCMainViewControllerToolBarMaxY;
+}
+
+
 - (void)setWebViewContentInset:(UIEdgeInsets)inset
 {
     [self.webview.scrollView setContentInset:inset];
@@ -94,10 +101,9 @@ const CGFloat BCMainViewControllerToolBarMaxY      = 0.0;
     if (![self isToolBarHidden] && ![self isToolBarShown]) {
         CGRect toolBarFrame = self.toolBar.frame;
         CGFloat toolbarPositionRange = BCMainViewControllerToolBarMaxY - BCMainViewControllerToolBarMinY;
-        CGFloat offset = _initialScrollPostion - self.webview.scrollView.contentOffset.y;
         CGFloat targetInsetTop = 0.0;
 
-        if (offset < BCMainViewControllerToolBarMaxY) {
+        if ([self isScrollNearTop] && ![self isToolBarHidden]) {
             toolBarFrame.origin.y = BCMainViewControllerToolBarMaxY;
             targetInsetTop = BCMainViewControllerToolBarMaxY + toolBarFrame.size.height;
         } else if (toolBarFrame.origin.y < toolbarPositionRange/2 ) {
@@ -108,7 +114,7 @@ const CGFloat BCMainViewControllerToolBarMaxY      = 0.0;
         
         
         _animating = YES;
-        [UIView animateWithDuration:0.15f animations:^{
+        [UIView animateWithDuration:0.25f animations:^{
             self.toolBar.frame = toolBarFrame;
             if (targetInsetTop != self.webview.scrollView.contentInset.top) {
                 UIEdgeInsets inset = UIEdgeInsetsMake(targetInsetTop, 0.0, 0.0, 0.0);
@@ -167,12 +173,13 @@ const CGFloat BCMainViewControllerToolBarMaxY      = 0.0;
     BOOL willScrollEnoughtToShow = _toolBarHeight <= scrollView.contentOffset.y - targetContentOffset->y;
     if ([self isToolBarHidden] && swipingDown && willScrollEnoughtToShow) {
         // seting the origin to the target offset means it will only fully show in the last frame of the deceletation
-        _toolBarOrigin = targetContentOffset->y;
+        _toolBarOrigin = floor(targetContentOffset->y);
     }
     
 }
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView{
+    _animating = NO;
     if (![self isToolBarHidden]) {
         // setting the origin so toolbar can go up as the user drags
         _toolBarOrigin = scrollView.contentOffset.y;
@@ -188,7 +195,9 @@ const CGFloat BCMainViewControllerToolBarMaxY      = 0.0;
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
-    [self fixHalfShownToolbar];
+    if ([self isScrollNearTop]) {
+        [self fixHalfShownToolbar];
+    }
 }
 
 @end
