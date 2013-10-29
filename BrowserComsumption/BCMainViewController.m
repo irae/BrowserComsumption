@@ -10,12 +10,14 @@
 const CGFloat BCMainViewControllerToolBarMinY      = -44.0;
 const CGFloat BCMainViewControllerToolBarMaxY      = 0.0;
 
-@interface BCMainViewController () <UIScrollViewDelegate>
+@interface BCMainViewController () <UIScrollViewDelegate, UIGestureRecognizerDelegate>
 @property (weak, nonatomic) IBOutlet UIView *toolBar;
 
 @end
 
 @implementation BCMainViewController {
+    CGFloat _toobarOrigin;
+    UIView * _innerWebview;
 }
 
 #pragma mark - lifecycle
@@ -44,6 +46,7 @@ const CGFloat BCMainViewControllerToolBarMaxY      = 0.0;
 
     [self loadHTMLIntoWebview];
     [self moveHeaderInsideScrollview];
+    [self addGestureRecognizers];
 }
 
 #pragma mark - initialization
@@ -61,9 +64,13 @@ const CGFloat BCMainViewControllerToolBarMaxY      = 0.0;
 - (void)moveHeaderInsideScrollview
 {
     UIScrollView *scrollView = self.webview.scrollView;
-    [scrollView addSubview:self.toolBar];
+
     CGRect toolbarRect = self.toolBar.frame;
+    toolbarRect.origin.y = 0.0;
+    self.toolBar.frame = toolbarRect;
+    [scrollView addSubview:self.toolBar];
     CGRect browserCanvas = self.webview.scrollView.frame;
+    _toobarOrigin = toolbarRect.origin.y + toolbarRect.size.height;
     for(UIView* subView in self.webview.scrollView.subviews){
         CGRect frame = subView.frame;
         if(frame.origin.x == browserCanvas.origin.x &&
@@ -71,14 +78,44 @@ const CGFloat BCMainViewControllerToolBarMaxY      = 0.0;
            frame.size.width == browserCanvas.size.width &&
            frame.size.height == browserCanvas.size.height)
         {
-            frame.origin.y = toolbarRect.origin.y + toolbarRect.size.height;
+            frame.origin.y = _toobarOrigin;
             subView.frame = frame;
+            _innerWebview = subView;
         }
     }
 }
 
-#pragma mark - scroll and toolbar related methods
+- (void)addGestureRecognizers
+{
+    UISwipeGestureRecognizer *swipeDown = [[UISwipeGestureRecognizer alloc] initWithTarget:self
+                                                                                  action:@selector(swipeDown)];
+    swipeDown.delegate = self;
+    swipeDown.direction = UISwipeGestureRecognizerDirectionDown;
+    [self.webview.scrollView addGestureRecognizer:swipeDown];
+}
 
+#pragma mark - UISwipeGestureRecognizer actions
+
+- (void)swipeDown
+{
+    __block CGRect toolbarRect = self.toolBar.frame;
+    toolbarRect.origin.y = self.webview.frame.origin.y - toolbarRect.size.height;
+    self.toolBar.frame = toolbarRect;
+    [self.view addSubview:self.toolBar];
+    [UIView animateWithDuration:0.3f animations:^{
+        toolbarRect.origin.y = self.webview.frame.origin.y;
+        self.toolBar.frame = toolbarRect;
+    }];
+}
+
+#pragma mark - UIGestureRecognizerDelegate
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+    return YES;
+}
+
+#pragma mark - scroll and toolbar related methods
 
 #pragma mark - UIScrollViewDelegate
 
@@ -88,6 +125,8 @@ const CGFloat BCMainViewControllerToolBarMaxY      = 0.0;
 
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset
 {
+    BOOL isContentGoingDown = velocity.y < 0.0;
+    NSLog(@"down: %d velocity: %f", isContentGoingDown, velocity.y);
 }
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView{
