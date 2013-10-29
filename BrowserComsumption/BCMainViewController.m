@@ -64,11 +64,6 @@ const CGFloat BCMainViewControllerToolBarMaxY      = 0.0;
     [scrollView addSubview:self.toolBar];
     CGRect toolbarRect = self.toolBar.frame;
     CGRect browserCanvas = self.webview.scrollView.frame;
-    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) {
-        scrollView.contentInset = UIEdgeInsetsMake(20.0, 0.0, 0.0, 0.0);
-        toolbarRect.origin.y = 0.0;
-        self.toolBar.frame = toolbarRect;
-    }
     for(UIView* subView in self.webview.scrollView.subviews){
         CGRect frame = subView.frame;
         if(frame.origin.x == browserCanvas.origin.x &&
