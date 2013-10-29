@@ -43,6 +43,7 @@ const CGFloat BCMainViewControllerToolBarMaxY      = 0.0;
     self.webview.scrollView.delegate = self;
 
     [self loadHTMLIntoWebview];
+    [self moveHeaderInsideScrollview];
 }
 
 #pragma mark - initialization
@@ -54,6 +55,30 @@ const CGFloat BCMainViewControllerToolBarMaxY      = 0.0;
     [self.webview loadHTMLString:[NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:&err] baseURL:nil];
     if (err) {
         NSLog(@"%@", err);
+    }
+}
+
+- (void)moveHeaderInsideScrollview
+{
+    UIScrollView *scrollView = self.webview.scrollView;
+    [scrollView addSubview:self.toolBar];
+    CGRect toolbarRect = self.toolBar.frame;
+    CGRect browserCanvas = self.webview.scrollView.frame;
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) {
+        scrollView.contentInset = UIEdgeInsetsMake(20.0, 0.0, 0.0, 0.0);
+        toolbarRect.origin.y = 0.0;
+        self.toolBar.frame = toolbarRect;
+    }
+    for(UIView* subView in self.webview.scrollView.subviews){
+        CGRect frame = subView.frame;
+        if(frame.origin.x == browserCanvas.origin.x &&
+           frame.origin.y == browserCanvas.origin.y &&
+           frame.size.width == browserCanvas.size.width &&
+           frame.size.height == browserCanvas.size.height)
+        {
+            frame.origin.y = toolbarRect.origin.y + toolbarRect.size.height;
+            subView.frame = frame;
+        }
     }
 }
 
