@@ -1,17 +1,24 @@
 <html>
     <head>
-        <style>
-            * {box-sizing: border-box; }
-            body { background: darkblue; }
-            header, footer {position: fixed; left:0; width: 100%; height: 60px; background: darkgray; border: 1px solid red;}
-            header {top:0;}
-            footer {bottom:0;}
-            div {height: 2000px; width:10px; border:2px dashed white; margin:0 auto;}
-        </style>
-    </head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+            <style>
+                * {box-sizing: border-box; }
+                body { background: palegreen; padding:0; margin: 0;}
+                header, footer {z-index:2; position: fixed; left:0; width: 100%; height: 60px; background: darkgray; border: 1px solid green;}
+                header {top:0;}
+                footer {bottom:0;}
+                #one {height: 2000px; width:50px; border:2px dashed white; margin:0 auto;padding:0; position: relative; }
+                #two, #three {height:80px; width:100%; background:green; left:0px; position:absolute;}
+                #two {top: 0px;}
+                #three {bottom: 0px;}
+                </style>
+            </head>
     <body>
-            <header></header>
-            <footer></footer>
-            <div></div>
+        <header></header>
+        <footer></footer>
+        <div id="one">
+            <div id="two"></div>
+            <div id="three"></div>
+        </div>
     </body>
 </html>
