@@ -7,7 +7,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="BCMainViewController">
             <connections>
-                <outlet property="toolBar" destination="kFh-67-UV0" id="hR4-IJ-Ovr"/>
+                <outlet property="headerView" destination="kFh-67-UV0" id="2vX-c4-f2k"/>
                 <outlet property="view" destination="1" id="3"/>
                 <outlet property="webview" destination="uwg-Y5-6Rl" id="I4S-oc-CGO"/>
             </connections>
